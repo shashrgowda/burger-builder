@@ -4,7 +4,7 @@ import classes from "./Controls.module.css";
 import BuildControl from "./BuildControl/BuildControl";
 
 const controlBtns = [
-  { label: "Salad", type: "salad" },
+  { label: "Lettuce", type: "lettuce" },
   { label: "Bacon", type: "bacon" },
   { label: "Cheese", type: "cheese" },
   { label: "Meat", type: "meat" },
@@ -13,7 +13,7 @@ const controlBtns = [
 const ingredientControls = (props) => (
   <div className={classes.Controls}>
     <p>
-      Current Price: <strong>${props.price.toFixed(2)}</strong>
+      Current Price: <strong>&#8377;{props.price.toFixed(2)}</strong>
     </p>
     {controlBtns.map((ctrl) => (
       <BuildControl
@@ -24,6 +24,13 @@ const ingredientControls = (props) => (
         disabled={props.disabled[ctrl.type]}
       />
     ))}
+    <button
+      className={classes.OrderButton}
+      disabled={!props.purchasable}
+      onClick={props.ordering}
+    >
+      PLACE ORDER
+    </button>
   </div>
 );
 
