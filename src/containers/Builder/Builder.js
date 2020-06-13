@@ -4,6 +4,9 @@ import Burger from "../../components/Burger/Burger";
 import Controls from "../../components/Burger/Controls/Controls";
 import Modal from "../../components/UI/Modal/Modal";
 import OrderSummary from "../../components/Burger/Summary/OrderSummary";
+import Axios from "../../axios-order";
+import Spinner from "../../components/UI/Spinner/Spinner";
+import errorHandler from "../../hoc/errorHandler/errorHandler";
 
 const INGREDIENT_PRICES = {
   lettuce: 50,
@@ -22,6 +25,7 @@ class BurgerBuilder extends Component {
     totalPrice: 140,
     purchasable: false,
     purchasing: false,
+    loading: false,
   };
 
   updatePurchasable(ingredients) {
@@ -46,8 +50,8 @@ class BurgerBuilder extends Component {
     const priceAddition = INGREDIENT_PRICES[type];
     const oldPrice = this.state.totalPrice;
     const newPrice = oldPrice + priceAddition;
-    console.log(typeof oldPrice);
-    console.log(priceAddition);
+    // console.log(typeof oldPrice);
+    // console.log(priceAddition);
     this.setState({ totalPrice: newPrice, ingredients: updatedIngredients });
     this.updatePurchasable(updatedIngredients);
   };
@@ -78,7 +82,28 @@ class BurgerBuilder extends Component {
   };
 
   purchaseContinue = () => {
-    alert("Order Placed!");
+    this.setState({ loading: true });
+    const order = {
+      ingredients: this.state.ingredients,
+      price: this.state.totalPrice,
+      customer: {
+        name: "Shash",
+        address: {
+          street: "Bengaluru",
+          zipCode: "560010",
+          country: "India",
+        },
+        email: "shashankr6@gmail.com",
+      },
+      deliveryMethod: "prime",
+    };
+    Axios.post("/orders.json", order)
+      .then((res) => {
+        this.setState({ loading: false, purchasing: false });
+      })
+      .catch((err) => {
+        this.setState({ loading: false, purchasing: false });
+      });
   };
 
   render() {
@@ -88,15 +113,24 @@ class BurgerBuilder extends Component {
     for (let key in disabledInfo) {
       disabledInfo[key] = disabledInfo[key] <= 0;
     }
+
+    let orderSumary = (
+      <OrderSummary
+        ingredients={this.state.ingredients}
+        price={this.state.totalPrice.toFixed(2)}
+        cancelled={this.purchaseCancel}
+        continue={this.purchaseContinue}
+      />
+    );
+
+    if (this.state.loading) {
+      orderSumary = <Spinner />;
+    }
+
     return (
       <Aux>
         <Modal show={this.state.purchasing} modalClose={this.purchaseCancel}>
-          <OrderSummary
-            ingredients={this.state.ingredients}
-            price={this.state.totalPrice.toFixed(2)}
-            cancelled={this.purchaseCancel}
-            continue={this.purchaseContinue}
-          />
+          {orderSumary}
         </Modal>
         <Burger ingredients={this.state.ingredients} />
         <Controls
@@ -112,4 +146,4 @@ class BurgerBuilder extends Component {
   }
 }
 
-export default BurgerBuilder;
+export default errorHandler(BurgerBuilder, Axios);
