@@ -28,6 +28,10 @@ class BurgerBuilder extends Component {
     loading: false,
   };
 
+  componentDidMount() {
+    // console.log(this.props);
+  }
+
   updatePurchasable(ingredients) {
     const sum = Object.keys(ingredients)
       .map((igKey) => {
@@ -82,28 +86,20 @@ class BurgerBuilder extends Component {
   };
 
   purchaseContinue = () => {
-    this.setState({ loading: true });
-    const order = {
-      ingredients: this.state.ingredients,
-      price: this.state.totalPrice,
-      customer: {
-        name: "Shash",
-        address: {
-          street: "Bengaluru",
-          zipCode: "560010",
-          country: "India",
-        },
-        email: "shashankr6@gmail.com",
-      },
-      deliveryMethod: "prime",
-    };
-    Axios.post("/orders.json", order)
-      .then((res) => {
-        this.setState({ loading: false, purchasing: false });
-      })
-      .catch((err) => {
-        this.setState({ loading: false, purchasing: false });
-      });
+    const query = [];
+    for (let i in this.state.ingredients) {
+      query.push(
+        encodeURIComponent(i) +
+          "=" +
+          encodeURIComponent(this.state.ingredients[i])
+      );
+    }
+    query.push("price=" + this.state.totalPrice);
+    const queryStr = query.join("&");
+    this.props.history.push({
+      pathname: "/checkout",
+      search: "?" + queryStr,
+    });
   };
 
   render() {

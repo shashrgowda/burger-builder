@@ -4,10 +4,10 @@ import SingleItem from "./SingleItem/SingleNavItem";
 
 const NavItems = () => (
   <ul className={classes.NavItems}>
-    <SingleItem link="/" active>
+    <SingleItem link="/" exact>
       Burger Builder
     </SingleItem>
-    <SingleItem link="/">Checkout</SingleItem>
+    <SingleItem link="/orders">Orders</SingleItem>
   </ul>
 );
 
