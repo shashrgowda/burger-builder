@@ -4,33 +4,85 @@ import Axios from "../../../axios-order";
 import Button from "../../../components/UI/Button/Button";
 import classes from "./ContactData.module.css";
 import Spinner from "../../../components/UI/Spinner/Spinner";
+import Input from "../../../components/UI/Forms/Input";
 
 class ContactData extends Component {
   state = {
-    name: "",
-    email: "",
-    mobile: "",
-    zipCode: "",
+    orderForm: {
+      name: {
+        elementType: "input",
+        elementConfig: {
+          type: "text",
+          placeholder: "Your Name",
+        },
+        value: "",
+      },
+      address: {
+        elementType: "input",
+        elementConfig: {
+          type: "text",
+          placeholder: "Delivery Address",
+        },
+        value: "",
+      },
+      zipCode: {
+        elementType: "input",
+        elementConfig: {
+          type: "text",
+          placeholder: "Your Zip Code",
+        },
+        value: "",
+      },
+      city: {
+        elementType: "input",
+        elementConfig: {
+          type: "text",
+          placeholder: "Delivery City",
+        },
+        value: "",
+      },
+      email: {
+        elementType: "input",
+        elementConfig: {
+          type: "email",
+          placeholder: "Your email",
+        },
+        value: "",
+      },
+      mobile: {
+        elementType: "input",
+        elementConfig: {
+          type: "text",
+          placeholder: "Your Contact No.",
+        },
+        value: "",
+      },
+      deliveryMethod: {
+        elementType: "select",
+        elementConfig: {
+          options: [
+            { value: "30 mins or free", display: "30 Mins or Free" },
+            { value: "asap", display: "ASAP" },
+          ],
+        },
+        value: "30 mins or free",
+      },
+    },
     loading: false,
   };
 
   orderHandler = (e) => {
     e.preventDefault();
-    console.log(this.props.ingredients);
+    // console.log(this.props.ingredients);
     this.setState({ loading: true });
+    const formData = {};
+    for (let eleType in this.state.orderForm) {
+      formData[eleType] = this.state.orderForm[eleType].value;
+    }
     const order = {
       ingredients: this.props.ingredients,
       price: this.props.price,
-      customer: {
-        name: "Shash",
-        address: {
-          street: "Bengaluru",
-          zipCode: "560010",
-          country: "India",
-        },
-        email: "shashankr6@gmail.com",
-      },
-      deliveryMethod: "prime",
+      userData: formData,
     };
     Axios.post("/orders.json", order)
       .then((res) => {
@@ -42,16 +94,42 @@ class ContactData extends Component {
       });
   };
 
+  inputEntered = (e, eleType) => {
+    const enteredForm = {
+      ...this.state.orderForm,
+    };
+
+    const updatedForm = { ...enteredForm[eleType] };
+
+    updatedForm.value = e.target.value;
+    enteredForm[eleType] = updatedForm;
+    this.setState({ orderForm: enteredForm });
+  };
+
   render() {
+    const formElements = [];
+    for (let key in this.state.orderForm) {
+      formElements.push({
+        id: key,
+        config: this.state.orderForm[key],
+      });
+    }
+    console.log(formElements);
+
     let form = (
-      <form>
-        <input type="text" name="name" placeholder="Your Name" />
-        <input type="email" name="email" placeholder="Your Email" />
-        <input type="number" name="mobile" placeholder="Your Mobile No." />
-        <input type="text" name="zip-code" placeholder="Your ZIP code" />
-        <Button btnType="Success" clicked={this.orderHandler}>
-          CONFIRM ORDER
-        </Button>
+      <form onSubmit={this.orderHandler}>
+        {formElements.map((ele) => {
+          return (
+            <Input
+              key={ele.id}
+              elementType={ele.config.elementType}
+              elementConfig={ele.config.elementConfig}
+              value={ele.config.value}
+              changed={(event) => this.inputEntered(event, ele.id)}
+            />
+          );
+        })}
+        <Button btnType="Success">CONFIRM ORDER</Button>
       </form>
     );
 
