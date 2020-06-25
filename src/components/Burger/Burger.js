@@ -1,32 +1,29 @@
 import React from "react";
-import { withRouter } from "react-router-dom";
 
 import classes from "../Burger/Burger.module.css";
 import BurgerIngredient from "./Ingredients/Ingredients";
 
 const Burger = (props) => {
-  // console.log(props);
-  let ingredientTypes = Object.keys(props.ingredients)
+  console.log(props);
+  let transformedIngredients = Object.keys(props.ingredients)
     .map((igKey) => {
       return [...Array(props.ingredients[igKey])].map((_, i) => {
         return <BurgerIngredient key={igKey + i} type={igKey} />;
       });
     })
-    .reduce((arr, ele) => {
-      return arr.concat(ele);
+    .reduce((arr, el) => {
+      return arr.concat(el);
     }, []);
-
-  if (ingredientTypes.length === 0) {
-    ingredientTypes = <p>Please add ingredients!</p>;
+  if (transformedIngredients.length === 0) {
+    transformedIngredients = <p>Please start adding ingredients!</p>;
   }
-  // console.log(ingredientTypes);
   return (
     <div className={classes.Burger}>
       <BurgerIngredient type="bread-top" />
-      {ingredientTypes}
+      {transformedIngredients}
       <BurgerIngredient type="bread-bottom" />
     </div>
   );
 };
 
-export default withRouter(Burger);
+export default Burger;
