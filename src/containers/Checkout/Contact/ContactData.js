@@ -5,6 +5,8 @@ import Button from "../../../components/UI/Button/Button";
 import classes from "./ContactData.module.css";
 import Spinner from "../../../components/UI/Spinner/Spinner";
 import Input from "../../../components/UI/Forms/Input";
+import errorHandler from "../../../hoc/errorHandler/errorHandler";
+import * as actions from "../../../store/actions/index";
 
 class ContactData extends Component {
   state = {
@@ -68,13 +70,11 @@ class ContactData extends Component {
         value: "30 mins or free",
       },
     },
-    loading: false,
   };
 
   orderHandler = (e) => {
     e.preventDefault();
-    // console.log(this.props.ingredients);
-    this.setState({ loading: true });
+
     const formData = {};
     for (let eleType in this.state.orderForm) {
       formData[eleType] = this.state.orderForm[eleType].value;
@@ -84,14 +84,8 @@ class ContactData extends Component {
       price: this.props.price,
       userData: formData,
     };
-    Axios.post("/orders.json", order)
-      .then((res) => {
-        this.setState({ loading: false });
-        this.props.history.push("/");
-      })
-      .catch((err) => {
-        this.setState({ loading: false });
-      });
+
+    this.props.onOrder(order);
   };
 
   inputEntered = (e, eleType) => {
@@ -133,7 +127,7 @@ class ContactData extends Component {
       </form>
     );
 
-    if (this.state.loading) {
+    if (this.props.loading) {
       form = <Spinner />;
     }
     return (
@@ -147,9 +141,19 @@ class ContactData extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    ings: state.ingredients,
-    price: state.totalPrice,
+    ings: state.burgerBuilder.ingredients,
+    price: state.burgerBuilder.totalPrice,
+    loading: state.order.loading,
   };
 };
 
-export default connect(mapStateToProps)(ContactData);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onOrder: (orderData) => dispatch(actions.purchaseBurger(orderData)),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(errorHandler(ContactData, Axios));

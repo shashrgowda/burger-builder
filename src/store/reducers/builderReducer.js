@@ -1,12 +1,7 @@
 const initState = {
-  ingredients: {
-    lettuce: 0,
-    bacon: 0,
-    cheese: 0,
-    meat: 0,
-  },
+  ingredients: null,
   totalPrice: 60,
-  purchasable: false,
+  error: false,
 };
 
 const INGREDIENT_PRICES = {
@@ -17,7 +12,6 @@ const INGREDIENT_PRICES = {
 };
 
 const reducer = (state = initState, action) => {
-  // eslint-disable-next-line
   switch (action.type) {
     case "ADD_INGREDIENT":
       return {
@@ -37,6 +31,20 @@ const reducer = (state = initState, action) => {
           [action.ingredientName]: state.ingredients[action.ingredientName] - 1,
         },
         totalPrice: state.totalPrice - INGREDIENT_PRICES[action.ingredientName],
+      };
+
+    case "SET_INGREDIENTS":
+      return {
+        ...state,
+        ingredients: action.ingredients,
+        totalPrice: 60,
+        error: false,
+      };
+
+    case "FETCH_FAILED":
+      return {
+        ...state,
+        error: true,
       };
 
     default:
