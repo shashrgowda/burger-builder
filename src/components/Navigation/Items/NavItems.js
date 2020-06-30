@@ -2,12 +2,17 @@ import React from "react";
 import classes from "./NavItems.module.css";
 import SingleItem from "./SingleItem/SingleNavItem";
 
-const NavItems = () => (
+const NavItems = (props) => (
   <ul className={classes.NavItems}>
     <SingleItem link="/" exact>
       Burger Builder
     </SingleItem>
-    <SingleItem link="/orders">Orders</SingleItem>
+    {props.isAuth ? <SingleItem link="/orders">Orders</SingleItem> : null}
+    {props.isAuth ? (
+      <SingleItem link="/logout">Logout</SingleItem>
+    ) : (
+      <SingleItem link="/auth">Login</SingleItem>
+    )}
   </ul>
 );
 

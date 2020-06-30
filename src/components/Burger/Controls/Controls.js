@@ -29,7 +29,7 @@ const ingredientControls = (props) => (
       disabled={!props.purchasable}
       onClick={props.ordering}
     >
-      PLACE ORDER
+      {props.isAuth ? "PLACE ORDER" : "SIGN UP"}
     </button>
   </div>
 );
