@@ -9,6 +9,7 @@
 /coverage
 axios-order.js
 /src/store/actions/auth.js
+/src/store/actions/builderActions.js
 
 # production
 /build
