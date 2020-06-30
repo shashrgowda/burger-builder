@@ -8,7 +8,7 @@
 # testing
 /coverage
 axios-order.js
-/store/actions/auth.js
+/src/store/actions/auth.js
 
 # production
 /build
