@@ -83,9 +83,10 @@ class ContactData extends Component {
       ingredients: this.props.ings,
       price: this.props.price,
       userData: formData,
+      userId: this.props.userId,
     };
 
-    this.props.onOrder(order, this.props.burger);
+    this.props.onOrder(order, this.props.token);
   };
 
   inputEntered = (e, eleType) => {
@@ -108,7 +109,7 @@ class ContactData extends Component {
         config: this.state.orderForm[key],
       });
     }
-    console.log(formElements);
+    // console.log(formElements);
 
     let form = (
       <form onSubmit={this.orderHandler}>
@@ -145,6 +146,7 @@ const mapStateToProps = (state) => {
     price: state.burgerBuilder.totalPrice,
     loading: state.order.loading,
     token: state.auth.token,
+    userId: state.auth.userId,
   };
 };
 

@@ -8,4 +8,4 @@ export {
 
 export { purchaseBurger, purchaseNext, fetchOrders } from "./order";
 
-export { auth, logout, authRedirect } from "./auth";
+export { auth, logout, authRedirect, authState } from "./auth";
